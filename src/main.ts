@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+import { PaginationResultDto } from './pagination.result.dto';
+
 import { AppModule } from './app.module';
 
 var cors = require('cors')
@@ -26,7 +28,11 @@ async function bootstrap() {
         .setExternalDoc('/api-json', '/api-json')
         .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+        extraModels: [
+            PaginationResultDto,
+        ],
+    });
 
     const CustomOptions = {
         customfavIcon: "https://nestjs.com/img/logo-small.svg",

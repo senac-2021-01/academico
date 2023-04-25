@@ -9,6 +9,8 @@ import { CursoEntity } from './curso.entity';
 import { CreateCursoDto } from './create.curso.dto';
 import { UpdateCursoDto } from './update.curso.dto';
 
+import { PaginationRequestDto } from '../pagination.request.dto';
+
 @Injectable()
 export class CursoService {
 
@@ -52,6 +54,13 @@ export class CursoService {
         }
 
         return cursoEntity;
+    }
+
+    async readMany(paginationRequestDto: PaginationRequestDto): Promise<[CursoEntity[], number]> {
+        return this.cursoRepository.findAndCount({
+            skip: paginationRequestDto.pageSize * (paginationRequestDto.page - 1),
+            take: paginationRequestDto.pageSize,
+        });
     }
 
 }

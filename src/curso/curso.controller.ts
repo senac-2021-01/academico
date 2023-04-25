@@ -8,6 +8,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
+    Query,
 } from '@nestjs/common';
 
 import {
@@ -15,6 +16,8 @@ import {
     ApiTags,
     ApiOperation,
     ApiResponse,
+    ApiOkResponse,
+    getSchemaPath,
 } from '@nestjs/swagger';
 
 import { CursoEntity } from './curso.entity';
@@ -23,6 +26,9 @@ import { CreateCursoDto } from './create.curso.dto';
 import { UpdateCursoDto } from './update.curso.dto';
 
 import { CursoService } from './curso.service';
+
+import { PaginationRequestDto } from '../pagination.request.dto';
+import { PaginationResultDto } from '../pagination.result.dto';
 
 @ApiTags('Cursos')
 @Controller('cursos')
@@ -104,6 +110,32 @@ export class CursoController {
         }
 
         throw new NotFoundException();
+    }
+
+    @ApiOperation({ operationId: 'readCursos' })
+    @Get()
+    @ApiOkResponse({
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(PaginationResultDto) },
+                {
+                    properties: {
+                        rows: {
+                            type: 'array',
+                            items: { $ref: getSchemaPath(CursoEntity) },
+                        },
+                    },
+                },
+            ],
+        },
+    })
+    async readMany(@Query() paginationReQuestDto: PaginationRequestDto): Promise<PaginationResultDto<CursoEntity>> {
+        const result = await this.cursoService.readMany(paginationReQuestDto);
+
+        return {
+            rows: result[0],
+            count: result[1],
+        };
     }
 
 }

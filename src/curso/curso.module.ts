@@ -8,9 +8,11 @@ import { CursoService } from './curso.service';
 import { CursoController } from './curso.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([
-        CursoEntity,
-    ])],
+    imports: [
+        TypeOrmModule.forFeature([
+            CursoEntity,
+        ]),
+    ],
     providers: [
         CursoService,
     ],
