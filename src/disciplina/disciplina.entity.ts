@@ -2,17 +2,18 @@ import {
     Column,
     Entity,
     PrimaryGeneratedColumn,
-    OneToMany,
+    ManyToOne,
+    JoinColumn,
 } from 'typeorm';
 
 import {
     ApiProperty,
 } from '@nestjs/swagger';
 
-import { DisciplinaEntity } from '../disciplina/disciplina.entity';
+import { CursoEntity } from '../curso/curso.entity';
 
-@Entity('curso')
-export class CursoEntity {
+@Entity('disciplina')
+export class DisciplinaEntity {
 
     @PrimaryGeneratedColumn()
     @ApiProperty()
@@ -33,7 +34,15 @@ export class CursoEntity {
     @ApiProperty()
     public cargaHoraria: number;
 
-    @OneToMany(() => DisciplinaEntity, disciplina => disciplina.curso)
-    disciplinas: DisciplinaEntity[];
+    @Column({
+        name: 'curso_id',
+        type: 'int',
+    })
+    @ApiProperty()
+    public cursoId: number;
+
+    @ManyToOne(() => CursoEntity, curso => curso.disciplinas)
+    @JoinColumn({ name: 'curso_id' })
+    curso: CursoEntity;
 
 }

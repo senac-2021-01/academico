@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength, IsInt, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsInt } from 'class-validator';
 
-export class CreateCursoDto {
+export class CreateDisciplinaDto {
 
     @ApiProperty()
     @IsString()
@@ -15,5 +15,11 @@ export class CreateCursoDto {
     @IsInt()
     @Type(() => Number)
     cargaHoraria: number;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsInt()
+    @Type(() => Number)
+    cursoId: number;
 
 }

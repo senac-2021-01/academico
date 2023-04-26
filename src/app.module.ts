@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CursoModule } from './curso/curso.module';
+import { DisciplinaModule } from './disciplina/disciplina.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { CursoModule } from './curso/curso.module';
             synchronize: true,
         }),
         CursoModule,
+        DisciplinaModule,
     ],
     controllers: [],
     providers: [],
