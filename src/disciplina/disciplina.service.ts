@@ -59,10 +59,21 @@ export class DisciplinaService {
     }
 
     async readMany(paginationRequestDto: PaginationRequestDto): Promise<[DisciplinaEntity[], number]> {
-        return this.disciplinaRepository.findAndCount({
-            skip: paginationRequestDto.pageSize * (paginationRequestDto.page - 1),
-            take: paginationRequestDto.pageSize,
-        });
+        return this.disciplinaRepository.createQueryBuilder('disciplina')
+            .innerJoinAndSelect('disciplina.curso', 'curso')
+            .take(paginationRequestDto.pageSize)
+            .skip(paginationRequestDto.pageSize * (paginationRequestDto.page - 1))
+            .getManyAndCount();
+    }
+
+    async readByCurso(cursoId: number, paginationRequestDto: PaginationRequestDto): Promise<[DisciplinaEntity[], number]> {
+        return this.disciplinaRepository.createQueryBuilder('disciplina')
+            .where('curso_id = :cursoId', {
+                cursoId: cursoId,
+            })
+            .take(paginationRequestDto.pageSize)
+            .skip(paginationRequestDto.pageSize * (paginationRequestDto.page - 1))
+            .getManyAndCount();
     }
 
 }

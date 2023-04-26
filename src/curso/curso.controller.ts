@@ -21,11 +21,13 @@ import {
 } from '@nestjs/swagger';
 
 import { CursoEntity } from './curso.entity';
+import { DisciplinaEntity } from '../disciplina/disciplina.entity';
 
 import { CreateCursoDto } from './create.curso.dto';
 import { UpdateCursoDto } from './update.curso.dto';
 
 import { CursoService } from './curso.service';
+import { DisciplinaService } from '../disciplina/disciplina.service';
 
 import { PaginationRequestDto } from '../pagination.request.dto';
 import { PaginationResultDto } from '../pagination.result.dto';
@@ -36,6 +38,7 @@ export class CursoController {
 
     constructor(
         private readonly cursoService: CursoService,
+        private readonly disciplinaService: DisciplinaService,
     ) { }
 
     @ApiOperation({ operationId: 'createCurso' })
@@ -68,6 +71,32 @@ export class CursoController {
         }
 
         throw new NotFoundException();
+    }
+
+    @ApiOperation({ operationId: 'readCursoDisciplinas' })
+    @Get(':cursoId/disciplinas')
+    @ApiOkResponse({
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(PaginationResultDto) },
+                {
+                    properties: {
+                        rows: {
+                            type: 'array',
+                            items: { $ref: getSchemaPath(DisciplinaEntity) },
+                        },
+                    },
+                },
+            ],
+        },
+    })
+    async readDisciplinas(@Param('cursoId', ParseIntPipe) cursoId: number, @Query() paginationReQuestDto: PaginationRequestDto): Promise<PaginationResultDto<DisciplinaEntity>> {
+        const result = await this.disciplinaService.readByCurso(cursoId, paginationReQuestDto);
+
+        return {
+            rows: result[0],
+            count: result[1],
+        };
     }
 
     @ApiOperation({ operationId: 'updateCurso' })
